@@ -4,7 +4,7 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setuptools.setup(
-    name="firaswehbe", 
+    name="redcap2sqlalchemy", 
     version="0.0.1",
     author="Firas H. Wehbe",
     author_email="Firas Wehbe <firas.wehbe@northwestern.edu>",
