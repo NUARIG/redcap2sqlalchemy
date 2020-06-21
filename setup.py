@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="redcap2sqlalchemy", 
-    version="0.0.1",
+    version="0.0.2",
     author="Firas H. Wehbe",
     author_email="Firas Wehbe <firas.wehbe@northwestern.edu>",
     description="Extracting data from REDCapo and pushing into a relational DB",
@@ -24,4 +24,8 @@ setuptools.setup(
         "Topic :: Database",
     ],
     python_requires='>=3.6',
+    install_requires=[
+        'sqlalchemy>=1.3',
+        'requests>=1'
+    ]
 )
