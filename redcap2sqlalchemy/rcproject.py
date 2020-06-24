@@ -90,3 +90,14 @@ class RCProject:
 class REDCapError(RuntimeError):
     """REDCap connection related errors"""
     pass
+
+def rcproject_from_config(myconfig):
+    """Convenience function to instantiate a project using a config like object
+
+    requires that the following keys be present
+    
+    * redcap.url
+    * redcap.token
+    """
+    return RCProject(myconfig['redcap.url'], myconfig['redcap.token'])
+
