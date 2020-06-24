@@ -7,7 +7,10 @@ class RCProject:
         ['project',
         'metadata',
         'version',
-        'instrument'])
+        'instrument',
+        'repeatingFormsEvents',
+        'arm',
+        'event'])
     """Supported REDCap API Actions as of this implementation"""
 
     info = None
@@ -30,7 +33,11 @@ class RCProject:
         return self._call(data)
 
     def exportMetaData(self, data = {}, format='json'):
-        """Calls the 'metadata' REDCap API Method"""
+        """Calls the 'metadata' REDCap API Method
+        
+        Note that if you want to pass an array of form names you have to follow the URL encoding convention
+        and use the following in your data dict object. {'forms[0]':'first_form', 'forms[1]':'second_form', ...}
+        """
         data['content'] = 'metadata'
         return self._call(data, format)
     
@@ -44,6 +51,25 @@ class RCProject:
         data['content'] = 'instrument'
         return self._call(data)
 
+    def exportRepeatingFormsEvents(self, data = {}):
+        """Calls the Export Repeating Instruments and Events REDCap API Method"""
+        data['content'] = 'repeatingFormsEvents'
+        return self._call(data)
+
+    def exportArms(self, data={}):
+        """Calls the Export Arms REDCap API Method"""
+        if self.info['is_longitudinal'] != 1 :
+            raise REDCapError('Cannot export events on non-longitudinal projects')
+        data['content'] = 'arm'
+        return self._call(data)
+
+    def exportEvents(self, data={}):
+        """Calls the Export Events REDCap API Method"""
+        if self.info['is_longitudinal'] != 1 :
+            raise REDCapError('Cannot export events on non-longitudinal projects')
+        data['content'] = 'event'
+        return self._call(data)
+
     """The methods below are internal worker methods. Not intended to be called directly."""
 
     def _call(self, data, format = 'json', parseJSON = True):
@@ -53,12 +79,12 @@ class RCProject:
 
         It does the following before the request is made
         * It binds the API token to the data payload
-        * It sets the format to 'json'
+        * It sets the format to 'json' if not provided
         * It checks that the API method being called is supported by this Class
 
         It does the following after the request is made
         * Raise an HTTPError based on the status code
-        * Attempts to parse the JSON payload and raises a RuntimeError if it fails
+        * Attempts to parse the JSON payload and raises a REDCapError if it fails
         """
         try:
             if data['content'] in self.supported_actions:
