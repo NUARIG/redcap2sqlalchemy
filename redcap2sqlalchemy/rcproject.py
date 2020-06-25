@@ -1,4 +1,4 @@
-import requests
+import requests as _requests
 
 class RCProject:
     """Sets up local class configured for API access scoped to a single project"""
@@ -90,7 +90,7 @@ class RCProject:
             if data['content'] in self.supported_actions:
                 data['token'] = self._token
                 data['format'] = format
-                callResult = requests.post(self._url, data)
+                callResult = _requests.post(self._url, data)
                 callResult.raise_for_status()
                 if format=='json' and parseJSON: 
                     return callResult.json()
