@@ -23,4 +23,6 @@ mysaurl = sa.engine.url.URL(
 )
 
 mysaengine = sa.create_engine(mysaurl)
+mymetadata = sa.MetaData(mysaengine)
+
 
