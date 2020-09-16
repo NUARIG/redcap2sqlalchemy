@@ -1,0 +1,11 @@
+[REDCAP]
+redcap.url = https://redcap.example.edu/api/
+redcap.token = ABCDE12345
+
+[DATABASE]
+sqlalchemy.drivername = postgres
+sqlalchemy.username = youruser
+sqlalchemy.password = yourpass
+sqlalchemy.host = localhost
+sqlalchemy.database = yourdb
+

@@ -130,3 +130,10 @@ dmypy.json
 
 # Visual Studio Code
 .vscode
+
+# VIM Editor
+*.swp
+
+# Prevent accidental committing of testing credentials
+scripts/*.ini
+
