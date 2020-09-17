@@ -2,6 +2,14 @@
 
 Generic methods for extracting data from REDCap and pushing into a relational DB using SQLAlchemy
 
+## To install (development only)
+
+Currently, this is not published on PyPI or anywhere else. The only way to install is to clone the repo locally and install from there as developers would.
+
+```bash
+$ pip install -e git+file:///path/to/local/repo
+```
+
 ## Classes
 
 ### RCProject
@@ -41,5 +49,3 @@ You can then use any of the bound methods to make specific API calls. For exampl
   'field_annotation': ''},
  {...
 ```
-
-
