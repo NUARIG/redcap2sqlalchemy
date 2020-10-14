@@ -30,7 +30,7 @@ class RCProject:
 
     def exportRecord(self, identifying_field, identifying_value, data = {}):
         data['content'] = 'record'
-        data['filterLogic'] = f'[{identifying_field}] = \'{identifying_field}\''
+        data['filterLogic'] = f'[{identifying_field}] = \'{identifying_value}\''
         return self._call(data)
 
     def exportProjectInfo(self,data = {}):
