@@ -27,8 +27,11 @@ class RCProject:
 
     """The methods below are used to call the API. They typically return the payload as parsed JSON object"""
 
-    def exportRecord(self,data = {}):
-        data['content'] =
+    def exportRecord(self, identifying_field, identifying_value, data = {}):
+        data['content'] = 'record'
+        data['filterLogic'] = '[' + identifying_field + ']' + " = \'" + identifying_value + '\''
+        #'filterLogic': '[globalid] = \'abcdefghijklmnopq\''
+        return self._call(data)
 
     def exportProjectInfo(self,data = {}):
         """Calls the 'project' REDCap API Method"""
