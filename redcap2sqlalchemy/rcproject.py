@@ -30,8 +30,7 @@ class RCProject:
 
     def exportRecord(self, identifying_field, identifying_value, data = {}):
         data['content'] = 'record'
-        data['filterLogic'] = '[' + identifying_field + ']' + " = \'" + identifying_value + '\''
-        #'filterLogic': '[globalid] = \'abcdefghijklmnopq\''
+        data['filterLogic'] = f'[{identifying_field}] = \'{identifying_field}\''
         return self._call(data)
 
     def exportProjectInfo(self,data = {}):
