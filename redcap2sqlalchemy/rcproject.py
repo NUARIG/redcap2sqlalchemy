@@ -10,6 +10,7 @@ class RCProject:
         'instrument',
         'repeatingFormsEvents',
         'arm',
+        'record',
         'event'])
     """Supported REDCap API Actions as of this implementation"""
 
