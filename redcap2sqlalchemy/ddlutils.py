@@ -21,29 +21,49 @@ class RC2SATableFactory:
         self._prefix = prefix
         self._suffix = suffix
 
-    def makeTable(self, formname, tablename = None, overwrite = False):
-        """Generates a SQL Alchemy Table based on a form name
-        
+    def makeTableForProject(self, projectname, identifier_col, tablename=None, overwrite=False):
+        """Generates a SQL Alchemy Table based on a project name
+
         Warning: if the tablename already exists as a table in the metadata, it will fail
                 unless the overwrite parameter is True (defauilt is False)
         """
         self._metadata.reflect()
-        if formname not in map( lambda x:x['instrument_name'], self._rcproject.exportInstruments() ):
-            raise REDCapError('Form name {0} is not in the given project'.format(formname))
-        if not isinstance(tablename,str):
-            tablename = self._prefix + formname + self._suffix
-        #todo clean up string interpolation here
-        redcap_dict = self._rcproject.exportMetaData(data={'forms' : 'array(\''+ formname + '\')'} )
+        if not isinstance(tablename, str):
+            tablename = self._prefix + projectname + self._suffix
+        # todo clean up string interpolation here
+        # todo for each form in metadata, add <form name>_complete column to table definition
+        redcap_dict = self._rcproject.exportMetaData(data={})
 
         if tablename in self._metadata.tables and overwrite is not True:
             raise REDCapError('Attempting to create a table {0} which exists without overwrite flag'.format(tablename))
 
-
         # todo foreign key relationship?
-        #todo this is specific to our workflow (with the global id, need to refactor)
-        #TODO USE ALLTOSTRING constant below in code here instead?
-        mytable = _sa.Table(tablename, self._metadata,_sa.Column('global_id', _sa.String, primary_key=True),
-                               *(_sa.Column(field['field_name'].replace('.', '_'), _sa.String) for field in redcap_dict if not (field['field_name'] == 'global_id')))
+        # TODO USE ALLTOSTRING constant below in code here instead?
+        mytable = _sa.Table(tablename, self._metadata, _sa.Column(identifier_col, _sa.String, primary_key=True),
+                            *(_sa.Column(field['field_name'].replace('.', '_'), _sa.String) for field in redcap_dict if
+                              not (field['field_name'] == identifier_col)))
+
+        """
+        A WHOLE BUNCH OF STUFF WITH COLUMNS NEED TO HAPPEN HERE
+        """
+
+        return mytable
+
+    def makeTable(self, formname, tablename = None, overwrite = False):
+        """Generates a SQL Alchemy Table based on a form name
+
+        Warning: if the tablename already exists as a table in the metadata, it will fail
+                unless the overwrite parameter is True (defauilt is False)
+        """
+        if formname not in map( lambda x:x['instrument_name'], self._rcproject.exportInstruments() ):
+            raise REDCapError('Form name {0} is not in the given project'.format(formname))
+        if not isinstance(tablename,str):
+            tablename = self._prefix + formname + self._suffix
+
+        if tablename in self._metadata.tables and overwrite is not True:
+            raise REDCapError('Attempting to create a table {0} which exists without overwrite flag'.format(tablename))
+
+        mytable = _sa.Table(tablename, self._metadata)
 
         """
         A WHOLE BUNCH OF STUFF WITH COLUMNS NEED TO HAPPEN HERE
