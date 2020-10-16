@@ -1,5 +1,4 @@
 import requests as _requests
-
 class RCProject:
     """Sets up local class configured for API access scoped to a single project"""
 
@@ -28,9 +27,8 @@ class RCProject:
 
     """The methods below are used to call the API. They typically return the payload as parsed JSON object"""
 
-    def exportRecord(self, identifying_field, identifying_value, data = {}):
+    def exportRecord(self,  data = {}):
         data['content'] = 'record'
-        data['filterLogic'] = f'[{identifying_field}] = \'{identifying_value}\''
         return self._call(data)
 
     def exportProjectInfo(self,data = {}):
