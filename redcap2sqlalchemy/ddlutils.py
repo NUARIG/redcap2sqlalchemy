@@ -20,7 +20,7 @@ class RC2SATableFactory:
         self._prefix = prefix
         self._suffix = suffix
 
-    def makeTableForProject(self, projectname, identifier_col, tablename=None, overwrite=False):
+    def make_table_for_project(self, projectname, identifier_col, tablename=None, overwrite=False):
         """Generates a SQL Alchemy Table based on a project name
 
         Warning: if the tablename already exists as a table in the metadata, it will fail
@@ -46,10 +46,10 @@ class RC2SATableFactory:
             for field in redcap_dict:
                 if field['field_name'] != identifier_col:
                     yield field['field_name']
+
         def generator_form_complete_cols():
             for form in forms:
                 yield form['instrument_name'] + '_complete'
-
 
         def concat(a, b, c, d, e):
             yield from a
@@ -67,7 +67,7 @@ class RC2SATableFactory:
                             *(_sa.Column(field, _sa.String) for field in concat(generate_other_fields(),
                                                                                 generate_other_fields_2(),
                                                                                 generate_other_fields_3(),
-                                generator_form_complete_cols(),
+                                                                                generator_form_complete_cols(),
                                                                                 generator_field_names())))
 
         """
