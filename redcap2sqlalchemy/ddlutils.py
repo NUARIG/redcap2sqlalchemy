@@ -33,11 +33,11 @@ class RC2SATableFactory:
         redcap_dict = self._rcproject.exportMetaData(data={})
         forms = self._rcproject.exportInstruments(data={})
 
-        def generator1():
+        def generator_field_names():
             for field in redcap_dict:
                 if field['field_name'] != identifier_col:
                     yield field['field_name']
-        def generator2():
+        def generator_form_complete_cols():
             for form in forms:
                 yield form['instrument_name'] + '_complete'
 
@@ -52,7 +52,8 @@ class RC2SATableFactory:
         # todo foreign key relationship?
         # TODO USE ALLTOSTRING constant below in code here instead?
         mytable = _sa.Table(tablename, self._metadata, _sa.Column(identifier_col, _sa.String, primary_key=True),
-                            *(_sa.Column(field, _sa.String) for field in  concat(generator1(),generator2())))
+                            *(_sa.Column(field, _sa.String) for field in concat(generator_form_complete_cols(),
+                                                                                generator_field_names())))
 
         """
         A WHOLE BUNCH OF STUFF WITH COLUMNS NEED TO HAPPEN HERE
