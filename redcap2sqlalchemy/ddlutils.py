@@ -1,6 +1,5 @@
 import sqlalchemy as _sa
 from .rcproject import RCProject, REDCapError
-
 """
 The following classes and functions are structural components (connection, Table, ...)
 """
@@ -30,9 +29,22 @@ class RC2SATableFactory:
         self._metadata.reflect()
         if not isinstance(tablename, str):
             tablename = self._prefix + projectname + self._suffix
-        # todo clean up string interpolation here
-        # todo for each form in metadata, add <form name>_complete column to table definition
+
         redcap_dict = self._rcproject.exportMetaData(data={})
+        forms = self._rcproject.exportInstruments(data={})
+
+        def generator1():
+            for field in redcap_dict:
+                if field['field_name'] != identifier_col:
+                    yield field['field_name']
+        def generator2():
+            for form in forms:
+                yield form['instrument_name'] + '_complete'
+
+
+        def concat(a, b):
+            yield from a
+            yield from b
 
         if tablename in self._metadata.tables and overwrite is not True:
             raise REDCapError('Attempting to create a table {0} which exists without overwrite flag'.format(tablename))
@@ -40,8 +52,7 @@ class RC2SATableFactory:
         # todo foreign key relationship?
         # TODO USE ALLTOSTRING constant below in code here instead?
         mytable = _sa.Table(tablename, self._metadata, _sa.Column(identifier_col, _sa.String, primary_key=True),
-                            *(_sa.Column(field['field_name'].replace('.', '_'), _sa.String) for field in redcap_dict if
-                              not (field['field_name'] == identifier_col)))
+                            *(_sa.Column(field, _sa.String) for field in  concat(generator1(),generator2())))
 
         """
         A WHOLE BUNCH OF STUFF WITH COLUMNS NEED TO HAPPEN HERE
