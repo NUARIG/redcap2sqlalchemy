@@ -33,6 +33,15 @@ class RC2SATableFactory:
         redcap_dict = self._rcproject.exportMetaData(data={})
         forms = self._rcproject.exportInstruments(data={})
 
+        def generate_other_fields():
+            yield 'redcap_event_name'
+
+        def generate_other_fields_2():
+            yield 'redcap_repeat_instrument'
+
+        def generate_other_fields_3():
+            yield 'redcap_repeat_instance'
+
         def generator_field_names():
             for field in redcap_dict:
                 if field['field_name'] != identifier_col:
@@ -42,17 +51,23 @@ class RC2SATableFactory:
                 yield form['instrument_name'] + '_complete'
 
 
-        def concat(a, b):
+        def concat(a, b, c, d, e):
             yield from a
             yield from b
+            yield from c
+            yield from d
+            yield from e
 
         if tablename in self._metadata.tables and overwrite is not True:
             raise REDCapError('Attempting to create a table {0} which exists without overwrite flag'.format(tablename))
 
         # todo foreign key relationship?
         # TODO USE ALLTOSTRING constant below in code here instead?
-        mytable = _sa.Table(tablename, self._metadata, _sa.Column(identifier_col, _sa.String, primary_key=True),
-                            *(_sa.Column(field, _sa.String) for field in concat(generator_form_complete_cols(),
+        mytable = _sa.Table(tablename, self._metadata, _sa.Column(identifier_col, _sa.String, primary_key=False),
+                            *(_sa.Column(field, _sa.String) for field in concat(generate_other_fields(),
+                                                                                generate_other_fields_2(),
+                                                                                generate_other_fields_3(),
+                                generator_form_complete_cols(),
                                                                                 generator_field_names())))
 
         """
